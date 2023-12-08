@@ -1,4 +1,8 @@
 import { compileMDX } from 'next-mdx-remote/rsc'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import rehypeHighlight from 'rehype-highlight/lib'
+import rehypeSlug from 'rehype-slug'
+import rehypePrismPlus from 'rehype-prism-plus'
 
 type Filetree = {
   tree: [
@@ -25,6 +29,19 @@ export async function getPostByName(filename: string): Promise<BlogPost | undefi
     source: rawMDX,
     options: {
       parseFrontmatter: true,
+      mdxOptions: {
+        rehypePlugins: [
+          rehypeHighlight,
+          rehypeSlug,
+          [rehypePrismPlus, { defaultLanguage: 'js', ignoreMissing: true }],
+          [
+            rehypeAutolinkHeadings,
+            {
+              behavior: 'wrap',
+            },
+          ],
+        ],
+      },
     },
   })
   const id = filename.replace(/\.mdx$/, '')
